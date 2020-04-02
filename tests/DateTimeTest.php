@@ -138,7 +138,7 @@ class DateTimeTest extends TestCase
             TDT::FIELD__NAME => 'test',
             TDT::FIELD__TITLE => '',
             TDT::FIELD__DESCRIPTION => '',
-            TDT::FIELD__CLASS => 'extas\\components\\workflow\\transitions\\dispatchers\\DateTime',
+            TDT::FIELD__CLASS => 'extas\\components\\workflows\\transitions\\dispatchers\\DateTime',
             TDT::FIELD__PARAMETERS => []
         ]));
 

@@ -131,7 +131,7 @@ class ContextHasAllParamsTest extends TestCase
             TDT::FIELD__NAME => 'test',
             TDT::FIELD__TITLE => 'Параметры контекста',
             TDT::FIELD__DESCRIPTION => 'Проверка наличия в контексте необходимых параметров',
-            TDT::FIELD__CLASS => 'extas\\components\\workflow\\transitions\\dispatchers\\ContextHasAllParams',
+            TDT::FIELD__CLASS => 'extas\\components\\workflows\\transitions\\dispatchers\\ContextHasAllParams',
             TDT::FIELD__PARAMETERS => []
         ]));
 

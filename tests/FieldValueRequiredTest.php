@@ -135,7 +135,7 @@ class FieldValueRequiredTest extends TestCase
             TDT::FIELD__NAME => 'test',
             TDT::FIELD__TITLE => '',
             TDT::FIELD__DESCRIPTION => '',
-            TDT::FIELD__CLASS => 'extas\\components\\workflow\\transitions\\dispatchers\\FieldValueRequired',
+            TDT::FIELD__CLASS => 'extas\\components\\workflows\\transitions\\dispatchers\\FieldValueRequired',
             TDT::FIELD__PARAMETERS => []
         ]));
 
