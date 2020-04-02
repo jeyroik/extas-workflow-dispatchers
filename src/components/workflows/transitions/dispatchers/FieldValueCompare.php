@@ -196,10 +196,10 @@ class FieldValueCompare extends Plugin implements ITransitionDispatcherExecutor
     {
         $typeMap = [
             static::TYPE__STRING => function () use ($first, $second) {
-                return strpos($first, $second) !== false;
+                return strpos($second, $first) !== false;
             },
             static::TYPE__NUMBER => function () use ($first, $second) {
-                return strpos($first, $second) !== false;
+                return strpos($second, $first) !== false;
             }
         ];
 
