@@ -2,7 +2,7 @@
   "name": "jeyroik/extas-workflow-dispatchers",
   "description": "Extas workflow transition dispatchers package",
   "require": {
-    "jeyroik/extas-workflow": "1.*"
+    "jeyroik/extas-workflow": "*"
   },
   "require-dev": {
     "phpunit/phpunit": "^9",
