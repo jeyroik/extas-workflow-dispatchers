@@ -23,6 +23,7 @@ use extas\components\workflows\entities\WorkflowEntityContext;
 use extas\components\workflows\Workflow;
 use extas\components\workflows\transitions\results\TransitionResult;
 use extas\components\workflows\transitions\dispatchers\FieldValueCompare;
+use extas\interfaces\workflows\transitions\errors\ITransitionErrorVocabulary;
 
 /**
  * Class FieldValueCompareTest
@@ -162,5 +163,850 @@ class FieldValueCompareTest extends TestCase
             $context,
             $result
         )->isSuccess());
+    }
+
+    public function testEqual()
+    {
+        $test = new TransitionDispatcher([
+            TransitionDispatcher::FIELD__NAME => 'test',
+            TransitionDispatcher::FIELD__SCHEMA_NAME => 'test',
+            TransitionDispatcher::FIELD__TYPE => TransitionDispatcher::TYPE__CONDITION,
+            TransitionDispatcher::FIELD__TRANSITION_NAME => 'test',
+            TransitionDispatcher::FIELD__TEMPLATE => 'test',
+            TransitionDispatcher::FIELD__PARAMETERS => [
+                [
+                    IParameter::FIELD__NAME => 'field_name',
+                    IParameter::FIELD__VALUE => 'test'
+                ],
+                [
+                    IParameter::FIELD__NAME => 'field_compare',
+                    IParameter::FIELD__VALUE => 'equal'
+                ],
+                [
+                    IParameter::FIELD__NAME => 'field_value',
+                    IParameter::FIELD__VALUE => 'test'
+                ],
+                [
+                    IParameter::FIELD__NAME => 'field_type',
+                    IParameter::FIELD__VALUE => 'string'
+                ]
+            ]
+        ]);
+        $entity = new WorkflowEntity([
+            WorkflowEntity::FIELD__STATE => 'from',
+            WorkflowEntity::FIELD__TEMPLATE => 'test',
+            'test' => 'test'
+        ]);
+
+        $schema = new WorkflowSchema([
+            WorkflowSchema::FIELD__NAME => 'test',
+            WorkflowSchema::FIELD__ENTITY_TEMPLATE => 'test',
+            WorkflowSchema::FIELD__TRANSITIONS => ['test']
+        ]);
+
+        $context = new WorkflowEntityContext([
+            'test' => true
+        ]);
+
+        $transition = new WorkflowTransition([
+            WorkflowTransition::FIELD__NAME => 'test',
+            WorkflowTransition::FIELD__STATE_FROM => 'from',
+            WorkflowTransition::FIELD__STATE_TO => 'to'
+        ]);
+        $result = new TransitionResult();
+        $dispatcher = new FieldValueCompare();
+        $accepted = $dispatcher(
+            $test,
+            $transition,
+            $entity,
+            $schema,
+            $context,
+            $result,
+            $entity
+        );
+
+        $this->assertTrue($accepted);
+    }
+
+    public function testNotEqual()
+    {
+        $test = new TransitionDispatcher([
+            TransitionDispatcher::FIELD__NAME => 'test',
+            TransitionDispatcher::FIELD__SCHEMA_NAME => 'test',
+            TransitionDispatcher::FIELD__TYPE => TransitionDispatcher::TYPE__CONDITION,
+            TransitionDispatcher::FIELD__TRANSITION_NAME => 'test',
+            TransitionDispatcher::FIELD__TEMPLATE => 'test',
+            TransitionDispatcher::FIELD__PARAMETERS => [
+                [
+                    IParameter::FIELD__NAME => 'field_name',
+                    IParameter::FIELD__VALUE => 'test'
+                ],
+                [
+                    IParameter::FIELD__NAME => 'field_compare',
+                    IParameter::FIELD__VALUE => 'notEqual'
+                ],
+                [
+                    IParameter::FIELD__NAME => 'field_value',
+                    IParameter::FIELD__VALUE => 'test'
+                ],
+                [
+                    IParameter::FIELD__NAME => 'field_type',
+                    IParameter::FIELD__VALUE => 'string'
+                ]
+            ]
+        ]);
+        $entity = new WorkflowEntity([
+            WorkflowEntity::FIELD__STATE => 'from',
+            WorkflowEntity::FIELD__TEMPLATE => 'test',
+            'test' => 'not test'
+        ]);
+
+        $schema = new WorkflowSchema([
+            WorkflowSchema::FIELD__NAME => 'test',
+            WorkflowSchema::FIELD__ENTITY_TEMPLATE => 'test',
+            WorkflowSchema::FIELD__TRANSITIONS => ['test']
+        ]);
+
+        $context = new WorkflowEntityContext([
+            'test' => true
+        ]);
+
+        $transition = new WorkflowTransition([
+            WorkflowTransition::FIELD__NAME => 'test',
+            WorkflowTransition::FIELD__STATE_FROM => 'from',
+            WorkflowTransition::FIELD__STATE_TO => 'to'
+        ]);
+        $result = new TransitionResult();
+        $dispatcher = new FieldValueCompare();
+        $accepted = $dispatcher(
+            $test,
+            $transition,
+            $entity,
+            $schema,
+            $context,
+            $result,
+            $entity
+        );
+
+        $this->assertTrue($accepted);
+    }
+
+    public function testGreater()
+    {
+        $test = new TransitionDispatcher([
+            TransitionDispatcher::FIELD__NAME => 'test',
+            TransitionDispatcher::FIELD__SCHEMA_NAME => 'test',
+            TransitionDispatcher::FIELD__TYPE => TransitionDispatcher::TYPE__CONDITION,
+            TransitionDispatcher::FIELD__TRANSITION_NAME => 'test',
+            TransitionDispatcher::FIELD__TEMPLATE => 'test',
+            TransitionDispatcher::FIELD__PARAMETERS => [
+                [
+                    IParameter::FIELD__NAME => 'field_name',
+                    IParameter::FIELD__VALUE => 'test'
+                ],
+                [
+                    IParameter::FIELD__NAME => 'field_compare',
+                    IParameter::FIELD__VALUE => 'greater'
+                ],
+                [
+                    IParameter::FIELD__NAME => 'field_value',
+                    IParameter::FIELD__VALUE => 'test'
+                ],
+                [
+                    IParameter::FIELD__NAME => 'field_type',
+                    IParameter::FIELD__VALUE => 'string'
+                ]
+            ]
+        ]);
+        $entity = new WorkflowEntity([
+            WorkflowEntity::FIELD__STATE => 'from',
+            WorkflowEntity::FIELD__TEMPLATE => 'test',
+            'test' => 'not test'
+        ]);
+
+        $schema = new WorkflowSchema([
+            WorkflowSchema::FIELD__NAME => 'test',
+            WorkflowSchema::FIELD__ENTITY_TEMPLATE => 'test',
+            WorkflowSchema::FIELD__TRANSITIONS => ['test']
+        ]);
+
+        $context = new WorkflowEntityContext([
+            'test' => true
+        ]);
+
+        $transition = new WorkflowTransition([
+            WorkflowTransition::FIELD__NAME => 'test',
+            WorkflowTransition::FIELD__STATE_FROM => 'from',
+            WorkflowTransition::FIELD__STATE_TO => 'to'
+        ]);
+        $result = new TransitionResult();
+        $dispatcher = new FieldValueCompare();
+        $accepted = $dispatcher(
+            $test,
+            $transition,
+            $entity,
+            $schema,
+            $context,
+            $result,
+            $entity
+        );
+
+        $this->assertTrue($accepted);
+    }
+
+    public function testGreaterOrEqual()
+    {
+        $test = new TransitionDispatcher([
+            TransitionDispatcher::FIELD__NAME => 'test',
+            TransitionDispatcher::FIELD__SCHEMA_NAME => 'test',
+            TransitionDispatcher::FIELD__TYPE => TransitionDispatcher::TYPE__CONDITION,
+            TransitionDispatcher::FIELD__TRANSITION_NAME => 'test',
+            TransitionDispatcher::FIELD__TEMPLATE => 'test',
+            TransitionDispatcher::FIELD__PARAMETERS => [
+                [
+                    IParameter::FIELD__NAME => 'field_name',
+                    IParameter::FIELD__VALUE => 'test'
+                ],
+                [
+                    IParameter::FIELD__NAME => 'field_compare',
+                    IParameter::FIELD__VALUE => 'greaterOrEqual'
+                ],
+                [
+                    IParameter::FIELD__NAME => 'field_value',
+                    IParameter::FIELD__VALUE => 'test'
+                ],
+                [
+                    IParameter::FIELD__NAME => 'field_type',
+                    IParameter::FIELD__VALUE => 'string'
+                ]
+            ]
+        ]);
+        $entity = new WorkflowEntity([
+            WorkflowEntity::FIELD__STATE => 'from',
+            WorkflowEntity::FIELD__TEMPLATE => 'test',
+            'test' => 'not test'
+        ]);
+
+        $schema = new WorkflowSchema([
+            WorkflowSchema::FIELD__NAME => 'test',
+            WorkflowSchema::FIELD__ENTITY_TEMPLATE => 'test',
+            WorkflowSchema::FIELD__TRANSITIONS => ['test']
+        ]);
+
+        $context = new WorkflowEntityContext([
+            'test' => true
+        ]);
+
+        $transition = new WorkflowTransition([
+            WorkflowTransition::FIELD__NAME => 'test',
+            WorkflowTransition::FIELD__STATE_FROM => 'from',
+            WorkflowTransition::FIELD__STATE_TO => 'to'
+        ]);
+        $result = new TransitionResult();
+        $dispatcher = new FieldValueCompare();
+        $accepted = $dispatcher(
+            $test,
+            $transition,
+            $entity,
+            $schema,
+            $context,
+            $result,
+            $entity
+        );
+
+        $this->assertTrue($accepted);
+
+        $entity['test'] = 'test';
+        $accepted = $dispatcher(
+            $test,
+            $transition,
+            $entity,
+            $schema,
+            $context,
+            $result,
+            $entity
+        );
+
+        $this->assertTrue($accepted);
+    }
+
+    public function testLower()
+    {
+        $test = new TransitionDispatcher([
+            TransitionDispatcher::FIELD__NAME => 'test',
+            TransitionDispatcher::FIELD__SCHEMA_NAME => 'test',
+            TransitionDispatcher::FIELD__TYPE => TransitionDispatcher::TYPE__CONDITION,
+            TransitionDispatcher::FIELD__TRANSITION_NAME => 'test',
+            TransitionDispatcher::FIELD__TEMPLATE => 'test',
+            TransitionDispatcher::FIELD__PARAMETERS => [
+                [
+                    IParameter::FIELD__NAME => 'field_name',
+                    IParameter::FIELD__VALUE => 'test'
+                ],
+                [
+                    IParameter::FIELD__NAME => 'field_compare',
+                    IParameter::FIELD__VALUE => 'lower'
+                ],
+                [
+                    IParameter::FIELD__NAME => 'field_value',
+                    IParameter::FIELD__VALUE => 'test'
+                ],
+                [
+                    IParameter::FIELD__NAME => 'field_type',
+                    IParameter::FIELD__VALUE => 'string'
+                ]
+            ]
+        ]);
+        $entity = new WorkflowEntity([
+            WorkflowEntity::FIELD__STATE => 'from',
+            WorkflowEntity::FIELD__TEMPLATE => 'test',
+            'test' => 'tes'
+        ]);
+
+        $schema = new WorkflowSchema([
+            WorkflowSchema::FIELD__NAME => 'test',
+            WorkflowSchema::FIELD__ENTITY_TEMPLATE => 'test',
+            WorkflowSchema::FIELD__TRANSITIONS => ['test']
+        ]);
+
+        $context = new WorkflowEntityContext([
+            'test' => true
+        ]);
+
+        $transition = new WorkflowTransition([
+            WorkflowTransition::FIELD__NAME => 'test',
+            WorkflowTransition::FIELD__STATE_FROM => 'from',
+            WorkflowTransition::FIELD__STATE_TO => 'to'
+        ]);
+        $result = new TransitionResult();
+        $dispatcher = new FieldValueCompare();
+        $accepted = $dispatcher(
+            $test,
+            $transition,
+            $entity,
+            $schema,
+            $context,
+            $result,
+            $entity
+        );
+
+        $this->assertTrue($accepted);
+    }
+
+    public function testLowerOrEqual()
+    {
+        $test = new TransitionDispatcher([
+            TransitionDispatcher::FIELD__NAME => 'test',
+            TransitionDispatcher::FIELD__SCHEMA_NAME => 'test',
+            TransitionDispatcher::FIELD__TYPE => TransitionDispatcher::TYPE__CONDITION,
+            TransitionDispatcher::FIELD__TRANSITION_NAME => 'test',
+            TransitionDispatcher::FIELD__TEMPLATE => 'test',
+            TransitionDispatcher::FIELD__PARAMETERS => [
+                [
+                    IParameter::FIELD__NAME => 'field_name',
+                    IParameter::FIELD__VALUE => 'test'
+                ],
+                [
+                    IParameter::FIELD__NAME => 'field_compare',
+                    IParameter::FIELD__VALUE => 'lowerOrEqual'
+                ],
+                [
+                    IParameter::FIELD__NAME => 'field_value',
+                    IParameter::FIELD__VALUE => 'test'
+                ],
+                [
+                    IParameter::FIELD__NAME => 'field_type',
+                    IParameter::FIELD__VALUE => 'string'
+                ]
+            ]
+        ]);
+        $entity = new WorkflowEntity([
+            WorkflowEntity::FIELD__STATE => 'from',
+            WorkflowEntity::FIELD__TEMPLATE => 'test',
+            'test' => 'tes'
+        ]);
+
+        $schema = new WorkflowSchema([
+            WorkflowSchema::FIELD__NAME => 'test',
+            WorkflowSchema::FIELD__ENTITY_TEMPLATE => 'test',
+            WorkflowSchema::FIELD__TRANSITIONS => ['test']
+        ]);
+
+        $context = new WorkflowEntityContext([
+            'test' => true
+        ]);
+
+        $transition = new WorkflowTransition([
+            WorkflowTransition::FIELD__NAME => 'test',
+            WorkflowTransition::FIELD__STATE_FROM => 'from',
+            WorkflowTransition::FIELD__STATE_TO => 'to'
+        ]);
+        $result = new TransitionResult();
+        $dispatcher = new FieldValueCompare();
+        $accepted = $dispatcher(
+            $test,
+            $transition,
+            $entity,
+            $schema,
+            $context,
+            $result,
+            $entity
+        );
+
+        $this->assertTrue($accepted);
+
+        $entity['test'] = 'test';
+        $accepted = $dispatcher(
+            $test,
+            $transition,
+            $entity,
+            $schema,
+            $context,
+            $result,
+            $entity
+        );
+
+        $this->assertTrue($accepted);
+    }
+
+    public function testEmpty()
+    {
+        $test = new TransitionDispatcher([
+            TransitionDispatcher::FIELD__NAME => 'test',
+            TransitionDispatcher::FIELD__SCHEMA_NAME => 'test',
+            TransitionDispatcher::FIELD__TYPE => TransitionDispatcher::TYPE__CONDITION,
+            TransitionDispatcher::FIELD__TRANSITION_NAME => 'test',
+            TransitionDispatcher::FIELD__TEMPLATE => 'test',
+            TransitionDispatcher::FIELD__PARAMETERS => [
+                [
+                    IParameter::FIELD__NAME => 'field_name',
+                    IParameter::FIELD__VALUE => 'test'
+                ],
+                [
+                    IParameter::FIELD__NAME => 'field_compare',
+                    IParameter::FIELD__VALUE => 'empty'
+                ],
+                [
+                    IParameter::FIELD__NAME => 'field_value',
+                    IParameter::FIELD__VALUE => 'test'
+                ],
+                [
+                    IParameter::FIELD__NAME => 'field_type',
+                    IParameter::FIELD__VALUE => 'string'
+                ]
+            ]
+        ]);
+        $entity = new WorkflowEntity([
+            WorkflowEntity::FIELD__STATE => 'from',
+            WorkflowEntity::FIELD__TEMPLATE => 'test',
+            'test' => ''
+        ]);
+
+        $schema = new WorkflowSchema([
+            WorkflowSchema::FIELD__NAME => 'test',
+            WorkflowSchema::FIELD__ENTITY_TEMPLATE => 'test',
+            WorkflowSchema::FIELD__TRANSITIONS => ['test']
+        ]);
+
+        $context = new WorkflowEntityContext([
+            'test' => true
+        ]);
+
+        $transition = new WorkflowTransition([
+            WorkflowTransition::FIELD__NAME => 'test',
+            WorkflowTransition::FIELD__STATE_FROM => 'from',
+            WorkflowTransition::FIELD__STATE_TO => 'to'
+        ]);
+        $result = new TransitionResult();
+        $dispatcher = new FieldValueCompare();
+        $accepted = $dispatcher(
+            $test,
+            $transition,
+            $entity,
+            $schema,
+            $context,
+            $result,
+            $entity
+        );
+
+        $this->assertTrue($accepted);
+    }
+
+    public function testNotEmpty()
+    {
+        $test = new TransitionDispatcher([
+            TransitionDispatcher::FIELD__NAME => 'test',
+            TransitionDispatcher::FIELD__SCHEMA_NAME => 'test',
+            TransitionDispatcher::FIELD__TYPE => TransitionDispatcher::TYPE__CONDITION,
+            TransitionDispatcher::FIELD__TRANSITION_NAME => 'test',
+            TransitionDispatcher::FIELD__TEMPLATE => 'test',
+            TransitionDispatcher::FIELD__PARAMETERS => [
+                [
+                    IParameter::FIELD__NAME => 'field_name',
+                    IParameter::FIELD__VALUE => 'test'
+                ],
+                [
+                    IParameter::FIELD__NAME => 'field_compare',
+                    IParameter::FIELD__VALUE => 'notEmpty'
+                ],
+                [
+                    IParameter::FIELD__NAME => 'field_value',
+                    IParameter::FIELD__VALUE => 'test'
+                ],
+                [
+                    IParameter::FIELD__NAME => 'field_type',
+                    IParameter::FIELD__VALUE => 'string'
+                ]
+            ]
+        ]);
+        $entity = new WorkflowEntity([
+            WorkflowEntity::FIELD__STATE => 'from',
+            WorkflowEntity::FIELD__TEMPLATE => 'test',
+            'test' => 'test'
+        ]);
+
+        $schema = new WorkflowSchema([
+            WorkflowSchema::FIELD__NAME => 'test',
+            WorkflowSchema::FIELD__ENTITY_TEMPLATE => 'test',
+            WorkflowSchema::FIELD__TRANSITIONS => ['test']
+        ]);
+
+        $context = new WorkflowEntityContext([
+            'test' => true
+        ]);
+
+        $transition = new WorkflowTransition([
+            WorkflowTransition::FIELD__NAME => 'test',
+            WorkflowTransition::FIELD__STATE_FROM => 'from',
+            WorkflowTransition::FIELD__STATE_TO => 'to'
+        ]);
+        $result = new TransitionResult();
+        $dispatcher = new FieldValueCompare();
+        $accepted = $dispatcher(
+            $test,
+            $transition,
+            $entity,
+            $schema,
+            $context,
+            $result,
+            $entity
+        );
+
+        $this->assertTrue($accepted);
+    }
+
+    public function testLike()
+    {
+        $test = new TransitionDispatcher([
+            TransitionDispatcher::FIELD__NAME => 'test',
+            TransitionDispatcher::FIELD__SCHEMA_NAME => 'test',
+            TransitionDispatcher::FIELD__TYPE => TransitionDispatcher::TYPE__CONDITION,
+            TransitionDispatcher::FIELD__TRANSITION_NAME => 'test',
+            TransitionDispatcher::FIELD__TEMPLATE => 'test',
+            TransitionDispatcher::FIELD__PARAMETERS => [
+                [
+                    IParameter::FIELD__NAME => 'field_name',
+                    IParameter::FIELD__VALUE => 'test'
+                ],
+                [
+                    IParameter::FIELD__NAME => 'field_compare',
+                    IParameter::FIELD__VALUE => 'like'
+                ],
+                [
+                    IParameter::FIELD__NAME => 'field_value',
+                    IParameter::FIELD__VALUE => 'test'
+                ],
+                [
+                    IParameter::FIELD__NAME => 'field_type',
+                    IParameter::FIELD__VALUE => 'string'
+                ]
+            ]
+        ]);
+        $entity = new WorkflowEntity([
+            WorkflowEntity::FIELD__STATE => 'from',
+            WorkflowEntity::FIELD__TEMPLATE => 'test',
+            'test' => 'tester'
+        ]);
+
+        $schema = new WorkflowSchema([
+            WorkflowSchema::FIELD__NAME => 'test',
+            WorkflowSchema::FIELD__ENTITY_TEMPLATE => 'test',
+            WorkflowSchema::FIELD__TRANSITIONS => ['test']
+        ]);
+
+        $context = new WorkflowEntityContext([
+            'test' => true
+        ]);
+
+        $transition = new WorkflowTransition([
+            WorkflowTransition::FIELD__NAME => 'test',
+            WorkflowTransition::FIELD__STATE_FROM => 'from',
+            WorkflowTransition::FIELD__STATE_TO => 'to'
+        ]);
+        $result = new TransitionResult();
+        $dispatcher = new FieldValueCompare();
+        $accepted = $dispatcher(
+            $test,
+            $transition,
+            $entity,
+            $schema,
+            $context,
+            $result,
+            $entity
+        );
+
+        $this->assertTrue($accepted);
+    }
+
+    public function testNotLike()
+    {
+        $test = new TransitionDispatcher([
+            TransitionDispatcher::FIELD__NAME => 'test',
+            TransitionDispatcher::FIELD__SCHEMA_NAME => 'test',
+            TransitionDispatcher::FIELD__TYPE => TransitionDispatcher::TYPE__CONDITION,
+            TransitionDispatcher::FIELD__TRANSITION_NAME => 'test',
+            TransitionDispatcher::FIELD__TEMPLATE => 'test',
+            TransitionDispatcher::FIELD__PARAMETERS => [
+                [
+                    IParameter::FIELD__NAME => 'field_name',
+                    IParameter::FIELD__VALUE => 'test'
+                ],
+                [
+                    IParameter::FIELD__NAME => 'field_compare',
+                    IParameter::FIELD__VALUE => 'notLike'
+                ],
+                [
+                    IParameter::FIELD__NAME => 'field_value',
+                    IParameter::FIELD__VALUE => 'test'
+                ],
+                [
+                    IParameter::FIELD__NAME => 'field_type',
+                    IParameter::FIELD__VALUE => 'string'
+                ]
+            ]
+        ]);
+        $entity = new WorkflowEntity([
+            WorkflowEntity::FIELD__STATE => 'from',
+            WorkflowEntity::FIELD__TEMPLATE => 'test',
+            'test' => 'success'
+        ]);
+
+        $schema = new WorkflowSchema([
+            WorkflowSchema::FIELD__NAME => 'test',
+            WorkflowSchema::FIELD__ENTITY_TEMPLATE => 'test',
+            WorkflowSchema::FIELD__TRANSITIONS => ['test']
+        ]);
+
+        $context = new WorkflowEntityContext([
+            'test' => true
+        ]);
+
+        $transition = new WorkflowTransition([
+            WorkflowTransition::FIELD__NAME => 'test',
+            WorkflowTransition::FIELD__STATE_FROM => 'from',
+            WorkflowTransition::FIELD__STATE_TO => 'to'
+        ]);
+        $result = new TransitionResult();
+        $dispatcher = new FieldValueCompare();
+        $accepted = $dispatcher(
+            $test,
+            $transition,
+            $entity,
+            $schema,
+            $context,
+            $result,
+            $entity
+        );
+
+        $this->assertTrue($accepted);
+    }
+
+    public function testIn()
+    {
+        $test = new TransitionDispatcher([
+            TransitionDispatcher::FIELD__NAME => 'test',
+            TransitionDispatcher::FIELD__SCHEMA_NAME => 'test',
+            TransitionDispatcher::FIELD__TYPE => TransitionDispatcher::TYPE__CONDITION,
+            TransitionDispatcher::FIELD__TRANSITION_NAME => 'test',
+            TransitionDispatcher::FIELD__TEMPLATE => 'test',
+            TransitionDispatcher::FIELD__PARAMETERS => [
+                [
+                    IParameter::FIELD__NAME => 'field_name',
+                    IParameter::FIELD__VALUE => 'test'
+                ],
+                [
+                    IParameter::FIELD__NAME => 'field_compare',
+                    IParameter::FIELD__VALUE => 'in'
+                ],
+                [
+                    IParameter::FIELD__NAME => 'field_value',
+                    IParameter::FIELD__VALUE => ['test']
+                ],
+                [
+                    IParameter::FIELD__NAME => 'field_type',
+                    IParameter::FIELD__VALUE => 'string'
+                ]
+            ]
+        ]);
+        $entity = new WorkflowEntity([
+            WorkflowEntity::FIELD__STATE => 'from',
+            WorkflowEntity::FIELD__TEMPLATE => 'test',
+            'test' => 'test'
+        ]);
+
+        $schema = new WorkflowSchema([
+            WorkflowSchema::FIELD__NAME => 'test',
+            WorkflowSchema::FIELD__ENTITY_TEMPLATE => 'test',
+            WorkflowSchema::FIELD__TRANSITIONS => ['test']
+        ]);
+
+        $context = new WorkflowEntityContext([
+            'test' => true
+        ]);
+
+        $transition = new WorkflowTransition([
+            WorkflowTransition::FIELD__NAME => 'test',
+            WorkflowTransition::FIELD__STATE_FROM => 'from',
+            WorkflowTransition::FIELD__STATE_TO => 'to'
+        ]);
+        $result = new TransitionResult();
+        $dispatcher = new FieldValueCompare();
+        $accepted = $dispatcher(
+            $test,
+            $transition,
+            $entity,
+            $schema,
+            $context,
+            $result,
+            $entity
+        );
+
+        $this->assertTrue($accepted);
+    }
+
+    public function testNotIn()
+    {
+        $test = new TransitionDispatcher([
+            TransitionDispatcher::FIELD__NAME => 'test',
+            TransitionDispatcher::FIELD__SCHEMA_NAME => 'test',
+            TransitionDispatcher::FIELD__TYPE => TransitionDispatcher::TYPE__CONDITION,
+            TransitionDispatcher::FIELD__TRANSITION_NAME => 'test',
+            TransitionDispatcher::FIELD__TEMPLATE => 'test',
+            TransitionDispatcher::FIELD__PARAMETERS => [
+                [
+                    IParameter::FIELD__NAME => 'field_name',
+                    IParameter::FIELD__VALUE => 'test'
+                ],
+                [
+                    IParameter::FIELD__NAME => 'field_compare',
+                    IParameter::FIELD__VALUE => 'notIn'
+                ],
+                [
+                    IParameter::FIELD__NAME => 'field_value',
+                    IParameter::FIELD__VALUE => ['test']
+                ],
+                [
+                    IParameter::FIELD__NAME => 'field_type',
+                    IParameter::FIELD__VALUE => 'string'
+                ]
+            ]
+        ]);
+        $entity = new WorkflowEntity([
+            WorkflowEntity::FIELD__STATE => 'from',
+            WorkflowEntity::FIELD__TEMPLATE => 'test',
+            'test' => 'success'
+        ]);
+
+        $schema = new WorkflowSchema([
+            WorkflowSchema::FIELD__NAME => 'test',
+            WorkflowSchema::FIELD__ENTITY_TEMPLATE => 'test',
+            WorkflowSchema::FIELD__TRANSITIONS => ['test']
+        ]);
+
+        $context = new WorkflowEntityContext([
+            'test' => true
+        ]);
+
+        $transition = new WorkflowTransition([
+            WorkflowTransition::FIELD__NAME => 'test',
+            WorkflowTransition::FIELD__STATE_FROM => 'from',
+            WorkflowTransition::FIELD__STATE_TO => 'to'
+        ]);
+        $result = new TransitionResult();
+        $dispatcher = new FieldValueCompare();
+        $accepted = $dispatcher(
+            $test,
+            $transition,
+            $entity,
+            $schema,
+            $context,
+            $result,
+            $entity
+        );
+
+        $this->assertTrue($accepted);
+    }
+
+    public function testMissedParameter()
+    {
+        $test = new TransitionDispatcher([
+            TransitionDispatcher::FIELD__NAME => 'test',
+            TransitionDispatcher::FIELD__SCHEMA_NAME => 'test',
+            TransitionDispatcher::FIELD__TYPE => TransitionDispatcher::TYPE__CONDITION,
+            TransitionDispatcher::FIELD__TRANSITION_NAME => 'test',
+            TransitionDispatcher::FIELD__TEMPLATE => 'test',
+            TransitionDispatcher::FIELD__PARAMETERS => [
+                [
+                    IParameter::FIELD__NAME => 'field_compare',
+                    IParameter::FIELD__VALUE => 'in'
+                ],
+                [
+                    IParameter::FIELD__NAME => 'field_value',
+                    IParameter::FIELD__VALUE => ['test']
+                ],
+                [
+                    IParameter::FIELD__NAME => 'field_type',
+                    IParameter::FIELD__VALUE => 'string'
+                ]
+            ]
+        ]);
+        $entity = new WorkflowEntity([
+            WorkflowEntity::FIELD__STATE => 'from',
+            WorkflowEntity::FIELD__TEMPLATE => 'test',
+            'test' => 'test'
+        ]);
+
+        $schema = new WorkflowSchema([
+            WorkflowSchema::FIELD__NAME => 'test',
+            WorkflowSchema::FIELD__ENTITY_TEMPLATE => 'test',
+            WorkflowSchema::FIELD__TRANSITIONS => ['test']
+        ]);
+
+        $context = new WorkflowEntityContext([
+            'test' => true
+        ]);
+
+        $transition = new WorkflowTransition([
+            WorkflowTransition::FIELD__NAME => 'test',
+            WorkflowTransition::FIELD__STATE_FROM => 'from',
+            WorkflowTransition::FIELD__STATE_TO => 'to'
+        ]);
+        $result = new TransitionResult();
+        $dispatcher = new FieldValueCompare();
+        $accepted = $dispatcher(
+            $test,
+            $transition,
+            $entity,
+            $schema,
+            $context,
+            $result,
+            $entity
+        );
+
+        $this->assertFalse($accepted);
+        $this->assertEquals(
+            ITransitionErrorVocabulary::ERROR__VALIDATION_FAILED,
+            $result->getError()->getCode()
+        );
     }
 }
