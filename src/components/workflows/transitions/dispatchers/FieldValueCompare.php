@@ -63,8 +63,8 @@ class FieldValueCompare extends Plugin implements ITransitionDispatcherExecutor
 
         if (method_exists($this, $fieldCompare->getValue() . 'Compare')) {
             $valid = $this->{$fieldCompare->getValue() . 'Compare'}(
-                $fieldValue->getValue(),
                 $entityValue,
+                $fieldValue->getValue(),
                 $fieldType->getValue(static::TYPE__STRING)
             );
         } else {
@@ -196,10 +196,10 @@ class FieldValueCompare extends Plugin implements ITransitionDispatcherExecutor
     {
         $typeMap = [
             static::TYPE__STRING => function () use ($first, $second) {
-                return strpos($first, $second) !== 0;
+                return strpos($first, $second) !== false;
             },
             static::TYPE__NUMBER => function () use ($first, $second) {
-                return strpos($first, $second) !== 0;
+                return strpos($first, $second) !== false;
             }
         ];
 
