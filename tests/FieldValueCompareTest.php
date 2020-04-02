@@ -333,9 +333,9 @@ class FieldValueCompareTest extends TestCase
     {
         list($test, $entity, $schema, $context, $transition, $result, $dispatcher) = $this->getFixtureData(
             'like',
-            55,
+            5,
             FieldValueCompare::TYPE__NUMBER,
-            5
+            55
         );
         $accepted = $dispatcher($test, $transition, $entity, $schema, $context, $result, $entity);
         $this->assertTrue($accepted);
