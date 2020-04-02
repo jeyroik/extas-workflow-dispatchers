@@ -199,7 +199,7 @@ class FieldValueCompare extends Plugin implements ITransitionDispatcherExecutor
                 return strpos($first, $second) !== false;
             },
             static::TYPE__NUMBER => function () use ($first, $second) {
-                return strpos($first, $second) !== false;
+                return strpos((string) $first, (string) $second) !== false;
             }
         ];
 
