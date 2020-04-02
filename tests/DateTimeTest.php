@@ -204,7 +204,7 @@ class DateTimeTest extends TestCase
         );
 
         $this->assertFalse($accepted);
-        $this->assertEqual(
+        $this->assertEquals(
             ITransitionErrorVocabulary::ERROR__VALIDATION_FAILED,
             $result->getError()->getCode()
         );
@@ -258,7 +258,7 @@ class DateTimeTest extends TestCase
         );
 
         $this->assertFalse($accepted);
-        $this->assertEqual(
+        $this->assertEquals(
             ITransitionErrorVocabulary::ERROR__VALIDATION_FAILED,
             $result->getError()->getCode()
         );
