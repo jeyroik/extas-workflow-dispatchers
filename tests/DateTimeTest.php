@@ -22,6 +22,8 @@ use extas\components\workflows\entities\WorkflowEntityContext;
 
 use extas\components\workflows\Workflow;
 use extas\components\workflows\transitions\results\TransitionResult;
+use extas\components\workflows\transitions\dispatchers\DateTime;
+use extas\interfaces\workflows\transitions\errors\ITransitionErrorVocabulary;
 
 /**
  * Class DateTimeTest
@@ -152,5 +154,113 @@ class DateTimeTest extends TestCase
             $context,
             $result
         )->isSuccess());
+    }
+
+    public function testMissedDatetimeParameter()
+    {
+        $test = new TransitionDispatcher([
+            TransitionDispatcher::FIELD__NAME => 'test',
+            TransitionDispatcher::FIELD__SCHEMA_NAME => 'test',
+            TransitionDispatcher::FIELD__TYPE => TransitionDispatcher::TYPE__CONDITION,
+            TransitionDispatcher::FIELD__TRANSITION_NAME => 'test',
+            TransitionDispatcher::FIELD__TEMPLATE => 'test',
+            TransitionDispatcher::FIELD__PARAMETERS => [
+                [
+                    IParameter::FIELD__NAME => 'compare',
+                    IParameter::FIELD__VALUE => 'lower'
+                ]
+            ]
+        ]);
+        $entity = new WorkflowEntity([
+            WorkflowEntity::FIELD__STATE => 'from',
+            WorkflowEntity::FIELD__TEMPLATE => 'test'
+        ]);
+
+        $schema = new WorkflowSchema([
+            WorkflowSchema::FIELD__NAME => 'test',
+            WorkflowSchema::FIELD__ENTITY_TEMPLATE => 'test',
+            WorkflowSchema::FIELD__TRANSITIONS => ['test']
+        ]);
+
+        $context = new WorkflowEntityContext([
+            'test' => true
+        ]);
+
+        $transition = new WorkflowTransition([
+            WorkflowTransition::FIELD__NAME => 'test',
+            WorkflowTransition::FIELD__STATE_FROM => 'from',
+            WorkflowTransition::FIELD__STATE_TO => 'to'
+        ]);
+        $result = new TransitionResult();
+        $dispatcher = new DateTime();
+        $accepted = $dispatcher(
+            $test,
+            $transition,
+            $entity,
+            $schema,
+            $context,
+            $result,
+            $entity
+        );
+
+        $this->assertFalse($accepted);
+        $this->assertEqual(
+            ITransitionErrorVocabulary::ERROR__VALIDATION_FAILED,
+            $result->getError()->getCode()
+        );
+    }
+
+    public function testMissedCompareParameter()
+    {
+        $test = new TransitionDispatcher([
+            TransitionDispatcher::FIELD__NAME => 'test',
+            TransitionDispatcher::FIELD__SCHEMA_NAME => 'test',
+            TransitionDispatcher::FIELD__TYPE => TransitionDispatcher::TYPE__CONDITION,
+            TransitionDispatcher::FIELD__TRANSITION_NAME => 'test',
+            TransitionDispatcher::FIELD__TEMPLATE => 'test',
+            TransitionDispatcher::FIELD__PARAMETERS => [
+                [
+                    IParameter::FIELD__NAME => 'datetime',
+                    IParameter::FIELD__VALUE => time() + 86400
+                ]
+            ]
+        ]);
+        $entity = new WorkflowEntity([
+            WorkflowEntity::FIELD__STATE => 'from',
+            WorkflowEntity::FIELD__TEMPLATE => 'test'
+        ]);
+
+        $schema = new WorkflowSchema([
+            WorkflowSchema::FIELD__NAME => 'test',
+            WorkflowSchema::FIELD__ENTITY_TEMPLATE => 'test',
+            WorkflowSchema::FIELD__TRANSITIONS => ['test']
+        ]);
+
+        $context = new WorkflowEntityContext([
+            'test' => true
+        ]);
+
+        $transition = new WorkflowTransition([
+            WorkflowTransition::FIELD__NAME => 'test',
+            WorkflowTransition::FIELD__STATE_FROM => 'from',
+            WorkflowTransition::FIELD__STATE_TO => 'to'
+        ]);
+        $result = new TransitionResult();
+        $dispatcher = new DateTime();
+        $accepted = $dispatcher(
+            $test,
+            $transition,
+            $entity,
+            $schema,
+            $context,
+            $result,
+            $entity
+        );
+
+        $this->assertFalse($accepted);
+        $this->assertEqual(
+            ITransitionErrorVocabulary::ERROR__VALIDATION_FAILED,
+            $result->getError()->getCode()
+        );
     }
 }
