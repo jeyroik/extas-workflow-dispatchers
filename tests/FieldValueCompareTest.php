@@ -321,7 +321,7 @@ class FieldValueCompareTest extends TestCase
         $entity = new WorkflowEntity([
             WorkflowEntity::FIELD__STATE => 'from',
             WorkflowEntity::FIELD__TEMPLATE => 'test',
-            'test' => 'not test'
+            'test' => 'west'
         ]);
 
         $schema = new WorkflowSchema([
@@ -384,7 +384,7 @@ class FieldValueCompareTest extends TestCase
         $entity = new WorkflowEntity([
             WorkflowEntity::FIELD__STATE => 'from',
             WorkflowEntity::FIELD__TEMPLATE => 'test',
-            'test' => 'not test'
+            'test' => 'west'
         ]);
 
         $schema = new WorkflowSchema([

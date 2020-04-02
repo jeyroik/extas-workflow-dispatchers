@@ -229,10 +229,10 @@ class FieldValueCompare extends Plugin implements ITransitionDispatcherExecutor
     {
         $typeMap = [
             static::TYPE__STRING => function () use ($first, $second) {
-                return empty($second);
+                return empty($first);
             },
             static::TYPE__NUMBER => function () use ($first, $second) {
-                return empty($second);
+                return empty($first);
             }
         ];
 
@@ -262,19 +262,19 @@ class FieldValueCompare extends Plugin implements ITransitionDispatcherExecutor
     {
         $typeMap = [
             static::TYPE__STRING => function () use ($first, $second) {
-                if (!is_array($first)) {
-                    $first = [$first];
+                if (!is_array($second)) {
+                    $second = [$second];
                 }
-                foreach ($first as $item) {
-                    if (!strcmp($item, $second)) {
+                foreach ($second as $item) {
+                    if (!strcmp($item, $first)) {
                         return true;
                     }
                 }
                 return false;
             },
             static::TYPE__NUMBER => function () use ($first, $second) {
-                $first = is_array($first) ? $first : [$first];
-                return in_array($second, $first);
+                $second = is_array($second) ? $second : [$second];
+                return in_array($first, $second);
             }
         ];
 
