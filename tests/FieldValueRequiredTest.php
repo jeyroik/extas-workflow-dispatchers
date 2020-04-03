@@ -22,6 +22,8 @@ use extas\components\workflows\entities\WorkflowEntityContext;
 
 use extas\components\workflows\Workflow;
 use extas\components\workflows\transitions\results\TransitionResult;
+use extas\components\workflows\transitions\dispatchers\FieldValueRequired;
+use extas\interfaces\workflows\transitions\errors\ITransitionErrorVocabulary;
 
 /**
  * Class FieldValueRequiredTest
@@ -149,5 +151,81 @@ class FieldValueRequiredTest extends TestCase
             $context,
             $result
         )->isSuccess());
+    }
+
+    public function testMissedParameter()
+    {
+        list($test, $entity, $schema, $context, $transition, $result, $dispatcher) = $this->getFixtureData(
+            'unknown'
+        );
+        $accepted = $dispatcher($test, $transition, $entity, $schema, $context, $result, $entity);
+        $this->assertFalse($accepted);
+        $this->assertEquals(
+            ITransitionErrorVocabulary::ERROR__VALIDATION_FAILED,
+            $result->getError()->getCode()
+        );
+    }
+
+    public function testInValidData()
+    {
+        list($test, $entity, $schema, $context, $transition, $result, $dispatcher) = $this->getFixtureData(
+            'field_name',
+            'test',
+            'not test'
+        );
+        $accepted = $dispatcher($test, $transition, $entity, $schema, $context, $result, $entity);
+        $this->assertFalse($accepted);
+        $this->assertEquals(
+            ITransitionErrorVocabulary::ERROR__VALIDATION_FAILED,
+            $result->getError()->getCode()
+        );
+    }
+
+    protected function getFixtureData(
+        string $dispatcherField = 'field_name',
+        string $dispatcherValue = 'test',
+        string $entityField = 'test'
+    )
+    {
+        $test = new TransitionDispatcher([
+            TransitionDispatcher::FIELD__NAME => 'test',
+            TransitionDispatcher::FIELD__SCHEMA_NAME => 'test',
+            TransitionDispatcher::FIELD__TYPE => TransitionDispatcher::TYPE__CONDITION,
+            TransitionDispatcher::FIELD__TRANSITION_NAME => 'test',
+            TransitionDispatcher::FIELD__TEMPLATE => 'test',
+            TransitionDispatcher::FIELD__PARAMETERS => [
+                [
+                    IParameter::FIELD__NAME => $dispatcherField,
+                    IParameter::FIELD__VALUE => $dispatcherValue
+                ]
+            ]
+        ]);
+        $entity = new WorkflowEntity([
+            WorkflowEntity::FIELD__STATE => 'from',
+            WorkflowEntity::FIELD__TEMPLATE => 'test',
+            $entityField => 'test'
+        ]);
+
+        $schema = new WorkflowSchema([
+            WorkflowSchema::FIELD__NAME => 'test',
+            WorkflowSchema::FIELD__ENTITY_TEMPLATE => 'test',
+            WorkflowSchema::FIELD__TRANSITIONS => ['test']
+        ]);
+
+        $context = new WorkflowEntityContext([
+            'test' => true
+        ]);
+
+        $transition = new WorkflowTransition([
+            WorkflowTransition::FIELD__NAME => 'test',
+            WorkflowTransition::FIELD__STATE_FROM => 'from',
+            WorkflowTransition::FIELD__STATE_TO => 'to'
+        ]);
+        $result = new TransitionResult();
+        $dispatcher = new FieldValueRequired();
+
+        return [
+            $test, $entity, $schema, $context, $transition, $result, $dispatcher
+        ];
     }
 }
