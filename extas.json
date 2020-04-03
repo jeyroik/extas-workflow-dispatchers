@@ -21,11 +21,6 @@
           "template@string": {
             "allowed": [
               {
-                "name": "equal",
-                "title": "=",
-                "description": "Равно"
-              },
-              {
                 "name": "notEqual",
                 "title": "!=",
                 "description": "Не равно"

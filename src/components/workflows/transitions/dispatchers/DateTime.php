@@ -77,17 +77,6 @@ class DateTime extends Plugin implements ITransitionDispatcherExecutor
      *
      * @return bool
      */
-    protected function equalCompare($entityValue, $conditionValue): bool
-    {
-        return $entityValue == $conditionValue;
-    }
-
-    /**
-     * @param $entityValue
-     * @param $conditionValue
-     *
-     * @return bool
-     */
     protected function notEqualCompare($entityValue, $conditionValue): bool
     {
         return $entityValue != $conditionValue;
