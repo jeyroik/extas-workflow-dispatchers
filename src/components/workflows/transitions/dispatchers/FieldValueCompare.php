@@ -32,7 +32,7 @@ class FieldValueCompare extends TransitionDispatcherExecutor implements ITransit
         $fieldCompare = $this->getParameterValue('field_compare');
 
         $entityValue = isset($entityEdited[$fieldName])
-            ? $entityEdited[$fieldName->getValue()]
+            ? $entityEdited[$fieldName]
             : null;
 
         $withCondition = new ConditionParameter([
