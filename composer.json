@@ -2,7 +2,7 @@
   "name": "jeyroik/extas-workflow-dispatchers",
   "description": "Extas workflow transition dispatchers package",
   "require": {
-    "jeyroik/extas-workflow": "*",
+    "jeyroik/extas-workflow": "3.*",
     "jeyroik/extas-conditions": "0.*"
   },
   "require-dev": {
