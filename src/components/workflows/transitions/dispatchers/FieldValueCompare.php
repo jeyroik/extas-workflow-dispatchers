@@ -7,7 +7,6 @@ use extas\interfaces\workflows\entities\IEntity;
 use extas\interfaces\workflows\transitions\dispatchers\ITransitionDispatcherExecutor;
 use extas\interfaces\workflows\transits\ITransitResult;
 
-
 /**
  * Class ConditionFieldValueCompare
  *
@@ -16,9 +15,6 @@ use extas\interfaces\workflows\transits\ITransitResult;
  */
 class FieldValueCompare extends TransitionDispatcherExecutor implements ITransitionDispatcherExecutor
 {
-    public const TYPE__STRING = 'string';
-    public const TYPE__NUMBER = 'number';
-
     /**
      * @param ITransitResult $result
      * @param IEntity $entityEdited

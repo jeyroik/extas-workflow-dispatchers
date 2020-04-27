@@ -45,13 +45,13 @@ class FieldValueCompareTest extends TestCase
     public function testConditionFailed()
     {
         $entity = new Entity([
-            'test' => 'test'
+            'test' => 5
         ]);
 
         $dispatcher = new FieldValueCompare();
         $dispatcher->addParametersByValues([
             'field_name' => 'test',
-            'field_value' => 'fail',
+            'field_value' => 8,
             'field_compare' => '='
         ]);
 
