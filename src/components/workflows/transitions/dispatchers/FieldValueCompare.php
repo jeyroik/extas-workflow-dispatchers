@@ -1,15 +1,12 @@
 <?php
 namespace extas\components\workflows\transitions\dispatchers;
 
-use extas\components\plugins\Plugin;
-use extas\interfaces\IItem;
-use extas\interfaces\workflows\entities\IWorkflowEntity;
-use extas\interfaces\workflows\schemas\IWorkflowSchema;
-use extas\interfaces\workflows\transitions\dispatchers\ITransitionDispatcher;
+use extas\components\conditions\ConditionParameter;
+use extas\components\errors\Error;
+use extas\interfaces\workflows\entities\IEntity;
 use extas\interfaces\workflows\transitions\dispatchers\ITransitionDispatcherExecutor;
-use extas\interfaces\workflows\transitions\errors\ITransitionErrorVocabulary;
-use extas\interfaces\workflows\transitions\IWorkflowTransition;
-use extas\interfaces\workflows\transitions\results\ITransitionResult;
+use extas\interfaces\workflows\transits\ITransitResult;
+
 
 /**
  * Class ConditionFieldValueCompare
@@ -17,279 +14,42 @@ use extas\interfaces\workflows\transitions\results\ITransitionResult;
  * @package extas\components\plugins\workflows\conditions
  * @author jeyroik@gmail.com
  */
-class FieldValueCompare extends Plugin implements ITransitionDispatcherExecutor
+class FieldValueCompare extends TransitionDispatcherExecutor implements ITransitionDispatcherExecutor
 {
     public const TYPE__STRING = 'string';
     public const TYPE__NUMBER = 'number';
 
     /**
-     * @param ITransitionDispatcher $dispatcher
-     * @param IWorkflowTransition $transition
-     * @param IWorkflowEntity $entitySource
-     * @param IWorkflowSchema $schema
-     * @param IItem $context
-     * @param ITransitionResult $result
-     * @param IWorkflowEntity $entityEdited
-     *
+     * @param ITransitResult $result
+     * @param IEntity $entityEdited
      * @return bool
+     * @throws
      */
-    public function __invoke(
-        ITransitionDispatcher $dispatcher,
-        IWorkflowTransition $transition,
-        IWorkflowEntity $entitySource,
-        IWorkflowSchema $schema,
-        IItem $context,
-        ITransitionResult &$result,
-        IWorkflowEntity &$entityEdited
-    ): bool
+    public function __invoke(ITransitResult &$result, IEntity &$entityEdited): bool
     {
-        $fieldName = $dispatcher->getParameter('field_name');
-        $fieldValue = $dispatcher->getParameter('field_value');
-        $fieldCompare = $dispatcher->getParameter('field_compare');
-        $fieldType = $dispatcher->getParameter('field_type');
+        $fieldName = $this->getParameterValue('field_name');
+        $fieldValue = $this->getParameterValue('field_value');
+        $fieldCompare = $this->getParameterValue('field_compare');
 
-        if (!$fieldName || !$fieldValue || !$fieldCompare || !$fieldType) {
-            $result->fail(ITransitionErrorVocabulary::ERROR__VALIDATION_FAILED, [
-                'field_value_compare' =>
-                    'Missed on of `field_name`, `field_value`, `field_compare`, `field_type` in the `'
-                    . $dispatcher->getName() . '`'
-            ]);
-            return false;
-        }
-
-        $entityValue = isset($entitySource[$fieldName->getValue()])
-            ? $entitySource[$fieldName->getValue()]
+        $entityValue = isset($entityEdited[$fieldName])
+            ? $entityEdited[$fieldName->getValue()]
             : null;
 
-        if (method_exists($this, $fieldCompare->getValue() . 'Compare')) {
-            $valid = $this->{$fieldCompare->getValue() . 'Compare'}(
-                $entityValue,
-                $fieldValue->getValue(),
-                $fieldType->getValue(static::TYPE__STRING)
-            );
-        } else {
-            $valid = $entityValue == $fieldValue->getValue();
-        }
+        $withCondition = new ConditionParameter([
+            ConditionParameter::FIELD__VALUE => $fieldValue,
+            ConditionParameter::FIELD__CONDITION => $fieldCompare
+        ]);
 
-        if (!$valid) {
-            $result->fail(ITransitionErrorVocabulary::ERROR__VALIDATION_FAILED, [
-                'field_value_compare' => '`'
-                    . $fieldName->getValue() . '` is not `'
-                    . $fieldCompare->getValue() . '` to `'
-                    . $fieldValue->getValue() . '`'
-            ]);
+        $valid = true;
+        if (!$withCondition->isConditionTrue($entityValue)) {
+            $valid = false;
+            $result->addError(new Error([
+                Error::FIELD__NAME => 'compare_failed',
+                Error::FIELD__TITLE => 'Incorrect data',
+                Error::FIELD__DESCRIPTION => $entityValue . ' is not ' . $fieldCompare . ' to (than) ' . $fieldValue
+            ]));
         }
 
         return $valid;
-    }
-
-    /**
-     * @param $first
-     * @param $second
-     * @param string $type
-     *
-     * @return bool
-     */
-    protected function equalCompare($first, $second, string $type): bool
-    {
-        $typeMap = [
-            static::TYPE__STRING => function () use ($first, $second) {
-                // strcmp == 0 if first == second
-                return !strcmp($first, $second);
-            },
-            static::TYPE__NUMBER => function () use ($first, $second) {
-                return $first == $second;
-            }
-        ];
-
-        return isset($typeMap[$type]) ? $typeMap[$type]() : false;
-    }
-
-    /**
-     * @param $first
-     * @param $second
-     * @param string $type
-     *
-     * @return bool
-     */
-    protected function notEqualCompare($first, $second, string $type): bool
-    {
-        return !$this->equalCompare($first, $second, $type);
-    }
-
-    /**
-     * @param $first
-     * @param $second
-     * @param string $type
-     *
-     * @return bool
-     */
-    protected function greaterCompare($first, $second, string $type): bool
-    {
-        $typeMap = [
-            static::TYPE__STRING => function () use ($first, $second) {
-                // strcmp > 0 if first > second
-                return strcmp($first, $second) > 0;
-            },
-            static::TYPE__NUMBER => function () use ($first, $second) {
-                return $first > $second;
-            }
-        ];
-
-        return isset($typeMap[$type]) ? $typeMap[$type]() : false;
-    }
-
-    /**
-     * @param $first
-     * @param $second
-     * @param string $type
-     *
-     * @return bool
-     */
-    protected function lowerCompare($first, $second, string $type): bool
-    {
-        $typeMap = [
-            static::TYPE__STRING => function () use ($first, $second) {
-                // strcmp < 0 if first < second
-                return strcmp($first, $second) < 0;
-            },
-            static::TYPE__NUMBER => function () use ($first, $second) {
-                return $first < $second;
-            }
-        ];
-
-        return isset($typeMap[$type]) ? $typeMap[$type]() : false;
-    }
-
-    /**
-     * @param $first
-     * @param $second
-     * @param string $type
-     *
-     * @return bool
-     */
-    protected function greaterOrEqualCompare($first, $second, string $type): bool
-    {
-        return !$this->lowerCompare($first, $second, $type);
-    }
-
-    /**
-     * @param $first
-     * @param $second
-     * @param string $type
-     *
-     * @return bool
-     */
-    protected function lowerOrEqualCompare($first, $second, string $type): bool
-    {
-        return !$this->greaterCompare($first, $second, $type);
-    }
-
-    /**
-     * @param $first
-     * @param $second
-     * @param string $type
-     *
-     * @return bool
-     */
-    protected function likeCompare($first, $second, string $type): bool
-    {
-        $typeMap = [
-            static::TYPE__STRING => function () use ($first, $second) {
-                return strpos($first, $second) !== false;
-            },
-            static::TYPE__NUMBER => function () use ($first, $second) {
-                return strpos((string) $first, (string) $second) !== false;
-            }
-        ];
-
-        return isset($typeMap[$type]) ? $typeMap[$type]() : false;
-    }
-
-    /**
-     * @param $first
-     * @param $second
-     * @param string $type
-     *
-     * @return bool
-     */
-    protected function notLikeCompare($first, $second, string $type): bool
-    {
-        return !$this->likeCompare($first, $second, $type);
-    }
-
-    /**
-     * @param $first
-     * @param $second
-     * @param string $type
-     *
-     * @return bool
-     */
-    protected function emptyCompare($first, $second, string $type): bool
-    {
-        $typeMap = [
-            static::TYPE__STRING => function () use ($first, $second) {
-                return empty($first);
-            },
-            static::TYPE__NUMBER => function () use ($first, $second) {
-                return empty($first);
-            }
-        ];
-
-        return isset($typeMap[$type]) ? $typeMap[$type]() : false;
-    }
-
-    /**
-     * @param $first
-     * @param $second
-     * @param string $type
-     *
-     * @return bool
-     */
-    protected function notEmptyCompare($first, $second, string $type): bool
-    {
-        return !$this->emptyCompare($first, $second, $type);
-    }
-
-    /**
-     * @param $first
-     * @param $second
-     * @param string $type
-     *
-     * @return bool
-     */
-    protected function inCompare($first, $second, string $type): bool
-    {
-        $typeMap = [
-            static::TYPE__STRING => function () use ($first, $second) {
-                if (!is_array($second)) {
-                    $second = [$second];
-                }
-                foreach ($second as $item) {
-                    if (!strcmp($item, $first)) {
-                        return true;
-                    }
-                }
-                return false;
-            },
-            static::TYPE__NUMBER => function () use ($first, $second) {
-                $second = is_array($second) ? $second : [$second];
-                return in_array($first, $second);
-            }
-        ];
-
-        return isset($typeMap[$type]) ? $typeMap[$type]() : false;
-    }
-
-    /**
-     * @param $first
-     * @param $second
-     * @param string $type
-     *
-     * @return bool
-     */
-    protected function notInCompare($first, $second, string $type): bool
-    {
-        return !$this->inCompare($first, $second, $type);
     }
 }

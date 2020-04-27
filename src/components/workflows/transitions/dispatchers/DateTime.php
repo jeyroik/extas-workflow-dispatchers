@@ -1,15 +1,16 @@
 <?php
 namespace extas\components\workflows\transitions\dispatchers;
 
-use extas\components\plugins\Plugin;
-use extas\interfaces\IItem;
-use extas\interfaces\workflows\entities\IWorkflowEntity;
-use extas\interfaces\workflows\schemas\IWorkflowSchema;
-use extas\interfaces\workflows\transitions\dispatchers\ITransitionDispatcher;
+use extas\components\conditions\ConditionParameter;
+use extas\components\conditions\THasCondition;
+use extas\components\errors\Error;
+use extas\components\Item;
+use extas\components\THasValue;
+use extas\interfaces\conditions\IHasCondition;
+use extas\interfaces\workflows\entities\IEntity;
 use extas\interfaces\workflows\transitions\dispatchers\ITransitionDispatcherExecutor;
-use extas\interfaces\workflows\transitions\errors\ITransitionErrorVocabulary;
-use extas\interfaces\workflows\transitions\IWorkflowTransition;
-use extas\interfaces\workflows\transitions\results\ITransitionResult;
+use extas\interfaces\workflows\transits\ITransitResult;
+
 
 /**
  * Class ConditionDateTime
@@ -17,90 +18,35 @@ use extas\interfaces\workflows\transitions\results\ITransitionResult;
  * @package extas\components\plugins\workflows\conditions
  * @author jeyroik@gmail.com
  */
-class DateTime extends Plugin implements ITransitionDispatcherExecutor
+class DateTime extends TransitionDispatcherExecutor implements ITransitionDispatcherExecutor
 {
     /**
-     * @param ITransitionDispatcher $dispatcher
-     * @param IWorkflowTransition $transition
-     * @param IWorkflowEntity $entitySource
-     * @param IWorkflowSchema $schema
-     * @param IItem $context
-     * @param ITransitionResult $result
-     * @param IWorkflowEntity $entityEdited
-     *
+     * @param ITransitResult $result
+     * @param IEntity $entityEdited
      * @return bool
+     * @throws
      */
-    public function __invoke(
-        ITransitionDispatcher $dispatcher,
-        IWorkflowTransition $transition,
-        IWorkflowEntity $entitySource,
-        IWorkflowSchema $schema,
-        IItem $context,
-        ITransitionResult &$result,
-        IWorkflowEntity &$entityEdited
-    ): bool
+    public function __invoke(ITransitResult &$result, IEntity &$entityEdited): bool
     {
-        $datetime = $dispatcher->getParameter('datetime');
+        $datetime = $this->getParameterValue('datetime');
+        $condition = $this->getParameterValue('compare');
 
-        if ($datetime) {
-            $compare = $dispatcher->getParameter('compare');
-            if ($compare) {
-                $compareCondition = $compare->getValue();
-                if (method_exists($this, $compareCondition . 'Compare')) {
-                    $conditionValue = is_numeric($datetime->getValue())
-                        ? $datetime->getValue()
-                        : strtotime($datetime->getValue());
-
-                    $valid = $this->{$compareCondition . 'Compare'}(time(), $conditionValue);
-
-                    if (!$valid) {
-                        $result->fail(ITransitionErrorVocabulary::ERROR__VALIDATION_FAILED, [
-                            'datetime' => 'Not valid datetime `' . $conditionValue . '`'
-                        ]);
-                    }
-
-                    return $valid;
-                }
-            }
-        }
-
-        $result->fail(ITransitionErrorVocabulary::ERROR__VALIDATION_FAILED, [
-            'datetime' => 'Missed datetime parameter in the dispatcher `' . $dispatcher->getName() . '`'
+        $withCondition = new ConditionParameter([
+            IHasCondition::FIELD__VALUE => $datetime,
+            IHasCondition::FIELD__CONDITION => $condition
         ]);
 
-        return false;
-    }
+        $validationSuccess = true;
+        if (!$withCondition->isConditionTrue(time())) {
+            $validationSuccess = false;
+            $result->addError(new Error([
+                Error::FIELD__NAME => 'incorrect_datetime',
+                Error::FIELD__TITLE => 'Incorrect datetime',
+                Error::FIELD__DESCRIPTION => 'Incorrect datetime',
+                Error::FIELD__CODE => 400
+            ]));
+        }
 
-    /**
-     * @param $entityValue
-     * @param $conditionValue
-     *
-     * @return bool
-     */
-    protected function notEqualCompare($entityValue, $conditionValue): bool
-    {
-        return $entityValue != $conditionValue;
-    }
-
-    /**
-     * @param $entityValue
-     * @param $conditionValue
-     *
-     * @return bool
-     */
-    protected function greaterCompare($entityValue, $conditionValue): bool
-    {
-        return $entityValue > $conditionValue;
-    }
-
-    /**
-     * @param $entityValue
-     * @param $conditionValue
-     *
-     * @return bool
-     */
-    protected function lowerCompare($entityValue, $conditionValue): bool
-    {
-        return $entityValue < $conditionValue;
+        return $validationSuccess;
     }
 }

@@ -58,41 +58,6 @@
       "parameters": []
     },
     {
-      "name": "condition__field_value_required",
-      "title": "Не пустое поле",
-      "description": "Проверка на наличия в содержании поля не пустого значения",
-      "class": "extas\\components\\workflows\\transitions\\dispatchers\\FieldValueRequired",
-      "parameters": [
-        {
-          "name": "field_name",
-          "template": "string",
-          "value": "",
-          "title": "Имя поля",
-          "description": "Имя поля, значение которого должно что-то содержать"
-        }
-      ]
-    },
-    {
-      "name": "condition__field_value",
-      "title": "Равенство значения",
-      "description": "Проверка на равенство значения поля с указанным значением",
-      "class": "extas\\components\\workflows\\transitions\\dispatchers\\FieldValue",
-      "parameters": [
-        {
-          "name": "field_name",
-          "template": "string",
-          "title": "Имя поля",
-          "description": "Имя поля из шаблона сущности"
-        },
-        {
-          "name": "field_value",
-          "template": "string",
-          "title": "Значение поля",
-          "description": "Значение, которому должно ровняться содержимое соответствующего поля"
-        }
-      ]
-    },
-    {
       "name": "condition__field_value_compare",
       "title": "Значение поля",
       "description": "Проверка соответствия содержимого поля указаннмоу значению",
@@ -108,97 +73,13 @@
           "name": "field_compare",
           "template": "string",
           "title": "Условие",
-          "description": "Условие сравнения значения и содержимого поля",
-          "template@string": {
-            "allow": [
-              {
-                "name": "equal",
-                "title": "=",
-                "description": "Равно"
-              },
-              {
-                "name": "notEqual",
-                "title": "!=",
-                "description": "Не равно"
-              },
-              {
-                "name": "greater",
-                "title": ">",
-                "description": "Больше"
-              },
-              {
-                "name": "lower",
-                "title": "<",
-                "description": "Меньше"
-              },
-              {
-                "name": "greaterOrEqual",
-                "title": ">=",
-                "description": "Больше или равно"
-              },
-              {
-                "name": "lowerOrEqual",
-                "title": "<=",
-                "description": "Меньше или равно"
-              },
-              {
-                "name": "empty",
-                "title": "-",
-                "description": "Пустое значение"
-              },
-              {
-                "name": "notEmpty",
-                "title": "!-",
-                "description": "Не пустое значение"
-              },
-              {
-                "name": "like",
-                "title": "~",
-                "description": "Содержит"
-              },
-              {
-                "name": "notLike",
-                "title": "!~",
-                "description": "Не содержит"
-              },
-              {
-                "name": "in",
-                "title": "*",
-                "description": "Один из"
-              },
-              {
-                "name": "notIn",
-                "title": "!*",
-                "description": "Не является одним из"
-              }
-            ]
-          }
+          "description": "Условие сравнения значения и содержимого поля"
         },
         {
           "name": "field_value",
           "template": "string",
           "title": "Значение поля",
           "description": "Значение с которым будет сравниваться содержимое соответствующего поля"
-        },
-        {
-          "name": "field_type",
-          "template": "string",
-          "title": "Тип поля",
-          "description": "Тип поля влияет на способ сравнения значения и содержимого поля",
-          "template@string": {
-            "allow": [
-              {
-                "name": "string",
-                "title": "Строка",
-                "description": "Строкове значение"
-              },
-              {
-                "name": "number",
-                "title": "Число",
-                "description": "Числовое значение"
-              }
-            ]
-          }
         }
       ]
     }

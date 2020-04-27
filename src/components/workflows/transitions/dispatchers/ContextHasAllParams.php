@@ -1,15 +1,9 @@
 <?php
 namespace extas\components\workflows\transitions\dispatchers;
 
-use extas\components\plugins\Plugin;
-use extas\interfaces\IItem;
-use extas\interfaces\workflows\entities\IWorkflowEntity;
-use extas\interfaces\workflows\schemas\IWorkflowSchema;
-use extas\interfaces\workflows\transitions\dispatchers\ITransitionDispatcher;
-use extas\interfaces\workflows\transitions\dispatchers\ITransitionDispatcherExecutor;
-use extas\interfaces\workflows\transitions\errors\ITransitionErrorVocabulary;
-use extas\interfaces\workflows\transitions\IWorkflowTransition;
-use extas\interfaces\workflows\transitions\results\ITransitionResult;
+use extas\components\errors\Error;
+use extas\interfaces\workflows\entities\IEntity;
+use extas\interfaces\workflows\transits\ITransitResult;
 
 /**
  * Class ValidatorContextHasAllParams
@@ -17,41 +11,38 @@ use extas\interfaces\workflows\transitions\results\ITransitionResult;
  * @package extas\components\plugins\workflows\validators
  * @author jeyroik@gmail.com
  */
-class ContextHasAllParams extends Plugin implements ITransitionDispatcherExecutor
+class ContextHasAllParams extends TransitionDispatcherExecutor
 {
     /**
-     * @param ITransitionDispatcher $dispatcher
-     * @param IWorkflowTransition $transition
-     * @param IWorkflowEntity $entitySource
-     * @param IWorkflowSchema $schema
-     * @param IItem $context
-     * @param ITransitionResult $result
-     * @param IWorkflowEntity $entityEdited
-     *
+     * @param ITransitResult $result
+     * @param IEntity $entityEdited
      * @return bool
      */
-    public function __invoke(
-        ITransitionDispatcher $dispatcher,
-        IWorkflowTransition $transition,
-        IWorkflowEntity $entitySource,
-        IWorkflowSchema $schema,
-        IItem $context,
-        ITransitionResult &$result,
-        IWorkflowEntity &$entityEdited
-    ): bool
+    public function __invoke(ITransitResult &$result, IEntity &$entityEdited): bool
     {
-        $requiredParams = $dispatcher->getParameters();
+        $requiredParamsNames = $this->getParametersNames();
+        $context = $this->getContext();
+        $validationSuccess = true;
 
-        foreach ($requiredParams as $param) {
-            if (!isset($context[$param->getName()])) {
-                $result->fail(ITransitionErrorVocabulary::ERROR__VALIDATION_FAILED, [
-                    'context_has_all_params' => 'Missed `' . $param->getName() . '` in the current context',
-                    'context' => $context->__toArray()
-                ]);
-                return false;
-            }
+        if (!$context->has(...$requiredParamsNames)) {
+            $result->addError(new Error([
+                Error::FIELD__NAME => 'missed_param',
+                Error::FIELD__TITLE => 'Missed param',
+                Error::FIELD__DESCRIPTION => $this->getErrorDescription($requiredParamsNames),
+                Error::FIELD__CODE => 400
+            ]));
+            $validationSuccess = false;
         }
 
-        return true;
+        return $validationSuccess;
+    }
+
+    /**
+     * @param array $names
+     * @return string
+     */
+    protected function getErrorDescription(array $names): string
+    {
+        return 'Can not find one of params "' . implode('", "', $names) . '" in a context';
     }
 }
