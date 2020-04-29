@@ -2,6 +2,7 @@
 namespace tests;
 
 use Dotenv\Dotenv;
+use extas\components\workflows\entities\EntityContext;
 use PHPUnit\Framework\TestCase;
 
 use extas\components\workflows\transitions\dispatchers\Notify;
@@ -26,7 +27,7 @@ class NotifyTest extends TestCase
     {
         $entity = new Entity();
         $result = new TransitResult();
-        $dispatcher = new Notify();
+        $dispatcher = new Notify([Notify::FIELD__CONTEXT => new EntityContext()]);
         $dispatcher->addParametersByValues([Notify::FIELD__NOTIFIER_CLASS => NotifierError::class]);
         $dispatcher($result, $entity);
         $this->assertTrue($result->hasErrors());
