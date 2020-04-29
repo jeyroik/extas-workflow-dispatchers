@@ -1,7 +1,7 @@
 {
   "name": "extas/workflow-dispatchers",
 
-  "workflow_transition_dispatcher_templates": [
+  "workflow_transition_dispatcher_samples": [
     {
       "name": "condition__datetime",
       "title": "Текущее время",
