@@ -3,7 +3,7 @@
 
   "workflow_transition_dispatcher_samples": [
     {
-      "name": "condition__datetime",
+      "name": "datetime",
       "title": "Текущее время",
       "description": "Ограничение на текущее время для перехода",
       "class": "extas\\components\\workflows\\transitions\\dispatchers\\DateTime",
@@ -44,21 +44,21 @@
       ]
     },
     {
-      "name": "validator__context_params",
+      "name": "context_params",
       "title": "Параметры контекста",
       "description": "Проверка наличия в контексте необходимых параметров",
       "class": "extas\\components\\workflows\\transitions\\dispatchers\\ContextHasAllParams",
       "parameters": []
     },
     {
-      "name": "validator__entity_params",
+      "name": "entity_params",
       "title": "Параметры сущности",
       "description": "Проверка наличия в сущности необходимых параметров",
       "class": "extas\\components\\workflows\\transitions\\dispatchers\\EntityHasAllParams",
       "parameters": []
     },
     {
-      "name": "condition__field_value_compare",
+      "name": "field_value_compare",
       "title": "Значение поля",
       "description": "Проверка соответствия содержимого поля указаннмоу значению",
       "class": "extas\\components\\workflows\\transitions\\dispatchers\\FieldValueCompare",
@@ -80,6 +80,20 @@
           "template": "string",
           "title": "Значение поля",
           "description": "Значение с которым будет сравниваться содержимое соответствующего поля"
+        }
+      ]
+    },
+    {
+      "name": "notify",
+      "title": "Уведомление",
+      "description": "Отправить внешний запрос",
+      "class": "extas\\components\\workflows\\transitions\\dispatchers\\Notify",
+      "parameters": [
+        {
+          "name": "notifier_class",
+          "template": "string",
+          "title": "Класс отправщика уведомления",
+          "description": "Имя класса отправщика уведомления"
         }
       ]
     }
