@@ -28,5 +28,7 @@ class Notify extends TransitionDispatcherExecutor
          */
         $notifier = new $notifierClass($this->__toArray());
         $notifier->notify($entityEdited, $this->getContext(), $result);
+
+        return true;
     }
 }
