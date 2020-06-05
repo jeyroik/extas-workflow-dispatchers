@@ -1,13 +1,13 @@
 <?php
 namespace tests;
 
-use Dotenv\Dotenv;
 use extas\components\workflows\entities\EntityContext;
-use PHPUnit\Framework\TestCase;
-
 use extas\components\workflows\transitions\dispatchers\Notify;
 use extas\components\workflows\transits\TransitResult;
 use extas\components\workflows\entities\Entity;
+
+use Dotenv\Dotenv;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Class NotifyTest
