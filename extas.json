@@ -1,6 +1,6 @@
 {
   "name": "extas/workflow-dispatchers",
-
+  "installer_version": 3,
   "workflow_transition_dispatcher_samples": [
     {
       "name": "datetime",
