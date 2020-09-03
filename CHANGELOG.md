@@ -1,10 +1,6 @@
-# 1.3.3
-
-- `extas-conditions` dependency removed.
-
 # 1.3.2
 
-- Up 
+- `extas-conditions` dependency removed.
 
 # 1.3.1
 
