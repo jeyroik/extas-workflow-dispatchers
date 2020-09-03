@@ -5,6 +5,8 @@ use extas\components\repositories\TSnuffRepository;
 use extas\components\conditions\Condition;
 use extas\components\conditions\ConditionEqual;
 use extas\components\conditions\ConditionRepository;
+use extas\components\repositories\TSnuffRepositoryDynamic;
+use extas\components\THasMagicClass;
 use extas\components\workflows\transits\TransitResult;
 use extas\components\workflows\entities\Entity;
 use extas\components\workflows\transitions\dispatchers\FieldValueCompare;
@@ -19,19 +21,22 @@ use Dotenv\Dotenv;
  */
 class FieldValueCompareTest extends TestCase
 {
-    use TSnuffRepository;
+    use TSnuffRepositoryDynamic;
+    use THasMagicClass;
 
     protected function setUp(): void
     {
         parent::setUp();
         $env = Dotenv::create(getcwd() . '/tests/');
         $env->load();
-        $this->registerSnuffRepos(['conditionRepository' => ConditionRepository::class]);
+        $this->createSnuffDynamicRepositories([
+            ['conditions', 'name', Condition::class]
+        ]);
     }
 
     public function tearDown(): void
     {
-        $this->unregisterSnuffRepos();
+        $this->deleteSnuffDynamicRepositories();
     }
 
     public function testConditionFailed()
@@ -47,7 +52,7 @@ class FieldValueCompareTest extends TestCase
             'field_compare' => '='
         ]);
 
-        $this->createWithSnuffRepo('conditionRepository', new Condition([
+        $this->getMagicClass('conditions')->create(new Condition([
             Condition::FIELD__NAME => 'eq',
             Condition::FIELD__ALIASES => ['eq', '='],
             Condition::FIELD__CLASS => ConditionEqual::class
