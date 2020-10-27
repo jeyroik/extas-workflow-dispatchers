@@ -1,7 +1,7 @@
 {
   "name": "extas/workflow-dispatchers",
   "installer_version": 3,
-  "workflow_transition_dispatcher_samples": [
+  "workflow_transition_dispatchers_samples": [
     {
       "name": "datetime",
       "title": "Текущее время",
