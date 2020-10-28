@@ -1,3 +1,7 @@
+# 1.3.5
+
+- Parameters in the `extas.json` updated.
+
 # 1.3.4
 
 - Section renamed.

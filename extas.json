@@ -7,95 +7,98 @@
       "title": "Текущее время",
       "description": "Ограничение на текущее время для перехода",
       "class": "extas\\components\\workflows\\transitions\\dispatchers\\DateTime",
-      "parameters": [
-        {
+      "parameters": {
+        "datetime": {
           "name": "datetime",
-          "template": "datetime",
+          "type": "integer",
           "value": "",
           "title": "Дата и время",
-          "description": "Timestamp даты и времени"
+          "description": "Timestamp даты и времени",
+          "allowed": []
         },
-        {
+        "compare": {
           "name": "compare",
-          "template": "string",
-          "template@string": {
-            "allowed": [
-              {
-                "name": "notEqual",
-                "title": "!=",
-                "description": "Не равно"
-              },
-              {
-                "name": "greater",
-                "title": ">",
-                "description": "Больше"
-              },
-              {
-                "name": "lower",
-                "title": "<",
-                "description": "Меньше"
-              }
-            ]
-          },
+          "type": "string",
+          "allowed": [
+            {
+              "name": "notEqual",
+              "title": "!=",
+              "description": "Не равно"
+            },
+            {
+              "name": "greater",
+              "title": ">",
+              "description": "Больше"
+            },
+            {
+              "name": "lower",
+              "title": "<",
+              "description": "Меньше"
+            }
+          ],
           "value": "equal",
           "title": "Условие",
           "description": "Условие сравнения. Допускается: equal, notEqual, greater, lower"
         }
-      ]
+      }
     },
     {
       "name": "context_params",
       "title": "Параметры контекста",
       "description": "Проверка наличия в контексте необходимых параметров",
       "class": "extas\\components\\workflows\\transitions\\dispatchers\\ContextHasAllParams",
-      "parameters": []
+      "parameters": {}
     },
     {
       "name": "entity_params",
       "title": "Параметры сущности",
       "description": "Проверка наличия в сущности необходимых параметров",
       "class": "extas\\components\\workflows\\transitions\\dispatchers\\EntityHasAllParams",
-      "parameters": []
+      "parameters": {}
     },
     {
       "name": "field_value_compare",
       "title": "Значение поля",
       "description": "Проверка соответствия содержимого поля указаннмоу значению",
       "class": "extas\\components\\workflows\\transitions\\dispatchers\\FieldValueCompare",
-      "parameters": [
-        {
+      "parameters": {
+        "field_name": {
           "name": "field_name",
-          "template": "string",
+          "type": "string",
           "title": "Имя поля",
-          "description": "Имя поля из шаблона сущности"
+          "description": "Имя поля из шаблона сущности",
+          "allowed": []
         },
-        {
+        "field_compare": {
           "name": "field_compare",
-          "template": "string",
+          "type": "string",
           "title": "Условие",
-          "description": "Условие сравнения значения и содержимого поля"
+          "description": "Условие сравнения значения и содержимого поля",
+          "allowed": []
         },
-        {
+        "field_value": {
           "name": "field_value",
-          "template": "string",
+          "type": "string",
           "title": "Значение поля",
-          "description": "Значение с которым будет сравниваться содержимое соответствующего поля"
+          "description": "Значение с которым будет сравниваться содержимое соответствующего поля",
+          "allowed": []
         }
-      ]
+      }
     },
     {
       "name": "notify",
       "title": "Уведомление",
       "description": "Отправить внешний запрос",
       "class": "extas\\components\\workflows\\transitions\\dispatchers\\Notify",
-      "parameters": [
-        {
+      "parameters": {
+        "notifier_class": {
           "name": "notifier_class",
-          "template": "string",
+          "type": "string",
           "title": "Класс отправщика уведомления",
-          "description": "Имя класса отправщика уведомления"
+          "description": "Имя класса отправщика уведомления",
+          "allowed": []
         }
-      ]
+      }
     }
   ]
 }
